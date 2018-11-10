@@ -7,7 +7,16 @@ class Card extends React.Component {
 
     this.state = {
       summaryShowing: false,
+      like: false,
     };
+  }
+
+  componentDidMount() {
+    if(this.props.likedMoviesList.includes(this.props.data.id)) {
+      this.setState({
+        like: true,
+      });
+    }
   }
 
   toggleSummary = () => {
@@ -18,10 +27,23 @@ class Card extends React.Component {
     });
   };
 
+  likeOrDislike = (id) => {
+    const { like } = this.state;
+    if(like) {
+      this.props.dislikeFunction(id);
+    } else {
+      this.props.likeFunction(id)
+    }
+    this.setState({
+      like: !like,
+    })
+  }
+
   render() {
-    const { summaryShowing } = this.state;
+    const { summaryShowing, like  } = this.state;
     const {
       data: {
+        id,
         poster_path,
         original_title,
         overview,
@@ -40,7 +62,7 @@ class Card extends React.Component {
         </div>
 
         <div className="card__like">
-          <i className="fa fa-heart-o" />
+          <i className={like ? `fa fa-heart` : `fa fa-heart-o`} onClick={() => this.likeOrDislike(id)}/>
         </div>
 
         <div className="card__subtitle">
